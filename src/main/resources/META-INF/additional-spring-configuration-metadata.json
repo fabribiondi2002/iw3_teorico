@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "dev.info.enabled",
+  "type": "java.lang.Boolean",
+  "description": "Habilita la visualización de información de desarrollo"
+}]}
