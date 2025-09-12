@@ -26,20 +26,6 @@ public class ProductBusiness implements IProductBusiness {
         }
     }
 
-    @Override
-    public Product load(Long id) throws BusinessException, NotFoundException {
-        Optional <Product> r;
-        try {
-            r = productDAO.findById(id);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw BusinessException.builder().ex(e).message(e.getMessage()).build();
-        }
-        if(r.isEmpty()) {
-            throw NotFoundException.builder().message("No se encontro el producto con id: "+id).build();
-        }
-        return r.get();
-    }
 
     @Override
     public Product load(String product) throws BusinessException, NotFoundException {
@@ -80,15 +66,26 @@ public class ProductBusiness implements IProductBusiness {
     }
 
     @Override
-    public Product update(Product product) throws BusinessException, NotFoundException {
-        load(product.getId());
-        try {
-            return productDAO.save(product);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw BusinessException.builder().ex(e).message(e.getMessage()).build();
-        }
-    }
+	public Product update(Product product) throws FoundException, NotFoundException, BusinessException {
+		load(product.getId());
+		Optional<Product> nombreExistente=null;
+		try {
+			nombreExistente=productDAO.findByProductAndIdNot(product.getProduct(), product.getId());
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw BusinessException.builder().ex(e).build();
+		}
+		if(nombreExistente.isPresent()) {
+			throw FoundException.builder().message("Se encontró un producto nombre="+product.getProduct()).build();
+		}
+
+		try {
+			return productDAO.save(product);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw BusinessException.builder().ex(e).build();
+		}
+	}
 
     @Override
     public void delete(Long id) throws BusinessException, NotFoundException {
@@ -100,6 +97,21 @@ public class ProductBusiness implements IProductBusiness {
             throw BusinessException.builder().ex(e).message(e.getMessage()).build();
         }
         
+    }
+
+    @Override
+    public Product load(long id) throws NotFoundException, BusinessException {
+       Optional <Product> r;
+        try {
+            r = productDAO.findById(id);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw BusinessException.builder().ex(e).message(e.getMessage()).build();
+        }
+        if(r.isEmpty()) {
+            throw NotFoundException.builder().message("No se encontro el producto con id: "+id).build();
+        }
+        return r.get();
     }
     
 }

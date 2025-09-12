@@ -10,5 +10,7 @@ import com.edu.iua.iw3.model.Product;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>{
-    Optional<Product> findByProduct(String product);  
+    Optional<Product> findByProduct(String product);
+
+    Optional<Product> findByProductAndIdNot(String product, Long id);  
 }
