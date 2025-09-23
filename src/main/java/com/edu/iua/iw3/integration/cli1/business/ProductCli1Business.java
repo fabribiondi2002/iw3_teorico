@@ -13,14 +13,13 @@ import com.edu.iua.iw3.model.business.FoundException;
 import com.edu.iua.iw3.model.business.IProductBusiness;
 import com.edu.iua.iw3.model.business.NotFoundException;
 
-
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
 public class ProductCli1Business implements IProductCli1Business {
 
-	@Autowired
+	@Autowired(required = false)
 	private ProductCli1Repository productDAO;
 
 	@Override
